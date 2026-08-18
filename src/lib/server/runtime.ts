@@ -1,6 +1,6 @@
-import { Config } from '$lib/server/config';
-import { createDatabase, type DatabaseService } from '$lib/server/db';
-import { DiscordBot } from '$lib/server/discord';
+import { Config } from './config';
+import { createDatabase, type DatabaseService } from './db';
+import { DiscordBot } from './discord';
 
 export type ServerServices = Readonly<{
 	config: Config;
