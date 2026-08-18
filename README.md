@@ -34,3 +34,12 @@ cp .env.example .env
 # Run the application in development mode
 npm run dev
 ```
+
+Migrations
+
+```bash
+# Create new migration when schema changes
+npm run db:generate
+# Apply migrations (Optional - done automatically on app start)
+npm run db:migrate
+```

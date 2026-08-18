@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from 'discord.js';
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { blackDesertClassLabels, resolveBlackDesertClass } from '../model';
+import type { RosterService } from '../service';
 
 export const commands = [
 	new SlashCommandBuilder()
@@ -11,7 +12,10 @@ export const commands = [
 		)
 ];
 
-export async function handleClassCommand(interaction: ChatInputCommandInteraction): Promise<void> {
+export async function handleClassCommand(
+	interaction: ChatInputCommandInteraction,
+	rosterService: RosterService
+): Promise<void> {
 	const input = interaction.options.getString('name', true);
 	const selectedClass = resolveBlackDesertClass(input);
 
@@ -24,7 +28,23 @@ export async function handleClassCommand(interaction: ChatInputCommandInteractio
 		return;
 	}
 
-	// Service to persist to database will go here
+	if (!interaction.guild) {
+		await interaction.reply({
+			content: 'This command can only be used in a server.',
+			ephemeral: true
+		});
+
+		return;
+	}
+
+	rosterService.upsertEntry({
+		guildId: interaction.guild.id,
+		guildName: interaction.guild.name,
+		userId: interaction.user.id,
+		userName: interaction.user.username,
+		className: selectedClass,
+		joined: new Date()
+	});
 
 	await interaction.reply({
 		content: `Your class has been set to **${blackDesertClassLabels[selectedClass]}**.`,

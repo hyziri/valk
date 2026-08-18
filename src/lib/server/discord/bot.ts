@@ -1,6 +1,8 @@
 import { Client, Events, GatewayIntentBits, OAuth2Scopes } from 'discord.js';
 import type { Interaction } from 'discord.js';
 import type { Config } from '../config';
+import type { Database } from '../db';
+import { RosterService } from '../service';
 import { commands, handleClassCommand } from './commands';
 
 export class DiscordBot {
@@ -8,8 +10,10 @@ export class DiscordBot {
 
 	private readonly token: string;
 	private loginPromise: Promise<string> | undefined;
+	private readonly rosterService: RosterService;
 
-	constructor(config: Config) {
+	constructor(config: Config, database: Database) {
+		this.rosterService = new RosterService(database.db);
 		this.token = config.discordToken;
 		this.client = new Client({
 			intents: [GatewayIntentBits.Guilds]
@@ -53,7 +57,7 @@ export class DiscordBot {
 			}
 
 			if (interaction.commandName === 'class') {
-				await handleClassCommand(interaction);
+				await handleClassCommand(interaction, this.rosterService);
 			}
 		} catch (error) {
 			console.error('Failed to handle Discord interaction', error);

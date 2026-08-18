@@ -2,5 +2,6 @@ export {
 	blackDesertClassSchema,
 	BlackDesertClass,
 	blackDesertClassLabels,
-	resolveBlackDesertClass
+	resolveBlackDesertClass,
+	type BlackDesertClassValue
 } from './class';
